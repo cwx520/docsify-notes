@@ -2,4 +2,4 @@
  * [首页](/) 
 
  * 面试题库
-   * [Mybatis](/面试题库/MyBatis/README)
+   * [MyBatis](/面试题库/MyBatis/README)
