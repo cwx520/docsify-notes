@@ -51,7 +51,7 @@ generate_sidebar() {
         for subsubdir in "$subdir"*/; do
           subsubdir_name=$(basename "$subsubdir")
           if ! should_ignore_dir "$subsubdir_name"; then
-            echo "  * [**$subsubdir_name**]($base_path/$subdir_name/$subsubdir_name/README)" >> "$SIDEBAR_FILE"
+            echo "  * [**$subsubdir_name**](${base_path#/docs}/$subdir_name/$subsubdir_name/README)" >> "$SIDEBAR_FILE"
           fi
         done
       fi
@@ -64,7 +64,7 @@ generate_sidebar() {
     for file in *; do
       if [ -f "$file" ] && ! should_ignore_file "$file" && [[ "$file" != "README.md" ]]; then
         file_name=$(basename "$file" .md)
-        echo "  * [$file_name]($base_path/$file)" >> "$SIDEBAR_FILE"
+        echo "  * [$file_name](${base_path#/docs}/$file_name)" >> "$SIDEBAR_FILE"
       fi
     done
   fi
@@ -73,7 +73,7 @@ generate_sidebar() {
   for subdir in */; do
     subdir_name=$(basename "$subdir")
     if [ -d "$subdir" ] && ! should_ignore_dir "$subdir_name"; then
-      generate_sidebar "$subdir" "$base_path/$subdir_name" "false"
+      generate_sidebar "$subdir" "${base_path#/docs}/$subdir_name" "false"
     fi
   done
 
@@ -94,7 +94,7 @@ generate_readme() {
   for file in *; do
     if [ -f "$file" ] && ! should_ignore_file "$file" && [[ "$file" != "README.md" ]]; then
       file_name=$(basename "$file" .md)
-      echo "* [$file_name]($base_path/$file)" >> "$README_FILE"
+      echo "* [$file_name](${base_path#/docs}/$file_name)" >> "$README_FILE"
     fi
   done
 
@@ -102,7 +102,7 @@ generate_readme() {
   for subdir in */; do
     subdir_name=$(basename "$subdir")
     if [ -d "$subdir" ] && ! should_ignore_dir "$subdir_name"; then
-      generate_readme "$subdir" "$base_path/$subdir_name"
+      generate_readme "$subdir" "${base_path#/docs}/$subdir_name"
     fi
   done
 
