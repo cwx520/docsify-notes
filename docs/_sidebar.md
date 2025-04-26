@@ -1,34 +1,6 @@
-* 导读
-    * [**Android**](/study/Android/README)
-    * [**LeetCode**](/study/LeetCode_Study/README)
-    * [**React**](/study/React/README)
-    * [**Vue**](/study/Vue/README)
-    * [**GoLang**](/study/GoLang/README)
+* 面试题库
+  * [**Mybatis**](/面试题库/Mybatis/README)
+* 学习
     * [**Java**](/study/Java/README)
-    * [**Python**](/study/Python/README)
-    * [**Scala**](/study/Scala/README.md)
-    * [**Rust**](/study/Rust/README.md)
-    * [**BigData**](/study/BigData/README.md)
-    * [**SpringBoot**](/study/SpringBoot/README)
-    * [**SpringCloud**](/study/SpringCloud/README)
-    * [**MQ**](/study/MQ/README)
-    * [**Netty**](/study/Netty/README)
-    * [**Linux**](/study/Linux/README)
-    * [**操作系统和硬件**](/study/操作系统和硬件/README)
-    * [**分布式策略**](/study/分布式策略/README)
-    * [**负载均衡-代理**](/study/负载均衡-代理/README)
-    * [**领域特定语言DSL**](/study/领域特定语言DSL/README)
-    * [**计算机网络**](/study/计算机网络/README)
-    * [**网络安全**](/study/网络安全/README)
-    * [**推荐系统**](/study/推荐系统/README)
-    * [**设计模式**](/study/设计模式/README)
-    * [**计算广告**](/study/计算广告/README)
-    * [**文件管理**](/study/文件管理/README)
-    * [**编程范式(ProgrammingParadigm)**](/study/编程范式(ProgrammingParadigm)/README.md)
-    * [**DataBase**](/study/DataBase/README)
-    * [**Elastic-Stack**](/study/Elastic-Stack/README)
-    * [**Docker**](/study/Docker/README)
-    * [**kubernetes**](/study/kubernetes/README)
-    * [**CICD**](/study/CICD/README)
-* 暂无更多...
+* 敬请期待...
 
