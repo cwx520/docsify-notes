@@ -110,8 +110,36 @@ generate_readme() {
   cd ..
 }
 
+# 生成根目录的 README.md 文件
+generate_root_readme() {
+  cat <<EOF > /Users/cwx/Documents/projects/docsify-notes/docs/README.md
+# 导读
+
+cmo的个人博客
+
+该项目用于记录个人学习笔记，有部分内容来自图书、博客、论坛等。
+
+如有侵权等问题，请联系307502005@qq.com，本人会第一时间删除相关内容。
+
+<small>笔记中的图片都来自网络(减小项目文件体积)，如果加载不出来，建议下载该项目到本地阅读</small>
+
+# 目录
+
+$(for dir in $(find /Users/cwx/Documents/projects/docsify-notes/docs -type d -mindepth 1 -maxdepth 1 ! -name "assets"); do
+    echo "* **$(basename $dir)**"
+    for subdir in $(find $dir -type d -mindepth 1 -maxdepth 1); do
+        echo "    * [$(basename $subdir)]($(echo $subdir | sed 's|/Users/cwx/Documents/projects/docsify-notes/docs||g')/README)"
+    done
+done)
+EOF
+
+  echo "README.md generated successfully."
+  chmod 644 /Users/cwx/Documents/projects/docsify-notes/docs/README.md
+}
+
 # 从当前目录开始生成文件
 generate_sidebar "." "" "true"
 generate_readme "." ""
+generate_root_readme
 
 echo "文件生成完成！"
