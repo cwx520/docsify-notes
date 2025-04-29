@@ -12,6 +12,7 @@ cmo的个人博客
 
 * **面试题库**
     * [Java](/面试题库/Java/README)
+    * [Nginx](/面试题库/Nginx/README)
 * **实战项目**
     * [商城项目](/实战项目/商城项目/README)
     * [企业项目](/实战项目/企业项目/README)
