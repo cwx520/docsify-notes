@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # 定义生成的文件名
+NAVBAR_FILE="_navbar.md"
 SIDEBAR_FILE="_sidebar.md"
 README_FILE="README.md"
 
@@ -28,6 +29,37 @@ should_ignore_file() {
     fi
   done
   return 1
+}
+
+# 生成 _navbar.md 文件
+generate_navbar() {
+  # 清空或创建 _navbar.md 文件
+  > "$NAVBAR_FILE"
+
+  # 固定内容
+  echo "* [首页](/)" >> "$NAVBAR_FILE"
+  echo "* [导读](/README.md)" >> "$NAVBAR_FILE"
+
+  # 遍历当前目录（即 docs 文件夹）的一级子目录
+  find . -maxdepth 1 -type d ! -path . | while read -r dir; do
+    # 获取一级目录名（去掉开头的 ./）
+    dir_name=${dir#./}
+    # 排除 assets 文件夹
+    if [ "$dir_name" == "assets" ]; then
+      continue
+    fi
+    # 输出一级目录
+    echo "* $dir_name" >> "$NAVBAR_FILE"
+    # 遍历一级目录下的二级子目录
+    find "$dir" -maxdepth 1 -type d ! -path "$dir" | while read -r subdir; do
+      # 获取二级目录名（去掉一级目录路径）
+      subdir_name=${subdir#./$dir_name/}
+      # 输出二级目录
+      echo "  * [$subdir_name]($subdir/README.md)" >> "$NAVBAR_FILE"
+    done
+  done
+
+  echo "_navbar.md 文件已生成"
 }
 
 # 生成 _sidebar.md 文件
@@ -137,9 +169,20 @@ EOF
   chmod 644 /Users/cwx/Documents/projects/docsify-notes/docs/README.md
 }
 
-# 从当前目录开始生成文件
-generate_sidebar "." "" "true"
-generate_readme "." ""
-generate_root_readme
+# 主函数
+main() {
+  # 生成 _navbar.md
+  generate_navbar
 
-echo "文件生成完成！"
+  # 生成 _sidebar.md 和 README.md
+  generate_sidebar "." "" "true"
+  generate_readme "." ""
+
+  # 生成根目录的 README.md
+  generate_root_readme
+
+  echo "所有文件生成完成！"
+}
+
+# 执行主函数
+main
