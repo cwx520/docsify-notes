@@ -1,6 +1,7 @@
 * [首页](/)
 * [导读](/README.md)
 * 面试题库
+  * [Redis](./面试题库/Redis/README.md)
   * [Java](./面试题库/Java/README.md)
   * [Nginx](./面试题库/Nginx/README.md)
 * 实战项目

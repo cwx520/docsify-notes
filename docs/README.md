@@ -11,6 +11,7 @@ cmo的个人博客
 # 目录
 
 * **面试题库**
+    * [Redis](/面试题库/Redis/README)
     * [Java](/面试题库/Java/README)
     * [Nginx](/面试题库/Nginx/README)
 * **实战项目**

@@ -10,4 +10,5 @@
 * 面试题库
   * [**Java**](/面试题库/Java/README)
   * [**Nginx**](/面试题库/Nginx/README)
+  * [**Redis**](/面试题库/Redis/README)
 * 敬请期待...
