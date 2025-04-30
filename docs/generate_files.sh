@@ -124,10 +124,13 @@ generate_readme() {
   cd ..
 }
 
+# 获取脚本所在目录作为根目录
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # 生成根目录的 README.md 文件
 generate_root_readme() {
-  local root_dir="/Users/cwx/Documents/projects/docsify-notes/docs"
-  echo "11111111："+ $root_dir
+  # 使用动态获取的根目录
+   local root_dir="$ROOT_DIR"
   cat <<EOF > "$root_dir/README.md"
 # 导读
 
