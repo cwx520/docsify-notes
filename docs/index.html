@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.css">
 </head>
 <body>
   <div id="app">Loading...</div>
@@ -26,8 +27,8 @@
 	  maxLevel:6,/* 可配置的最大支持渲染的标题层级 */
 	  coverpage:true,/* 启用封面页，默认加载_coverpage.md文件，也可以自定义文件名 */
 	  mergeNavbar: true,/* 小屏设备下合并导航栏到侧边栏 */
-	  search: 'auto',/* 全局搜索插件 */
 	  onlyCover:true,/* 首页只显示封面 */
+      search: 'auto',/* 全局搜索插件 */
       // 完整配置参数
       search: {
         maxAge: 86400000, // 过期时间，单位毫秒，默认一天
@@ -36,8 +37,29 @@
           '/zh-cn/': '搜索',
           '/': '搜索'
         },
-      }
-	}
+      },
+      count:{
+        countable:true,
+        fontsize:'0.9em',
+        color:'rgb(90,90,90)',
+        language:'chinese'
+      },
+      plugins: [
+        function(hook) {
+          var footer = [
+            '<hr/>',
+            '<footer>',
+            '<span><a href="https://github.com/cwx520/notes">程墨博客</a> &copy;2025.</span>',
+            '<span>程猿科技<a href="https://github.com/docsifyjs/docsify" target="_blank"> 307502005@qq.com</a>.</span>',
+            '</footer>'
+          ].join('');
+
+          hook.afterEach(function(html) {
+            return html + footer;
+          });
+        },
+      ]
+    }
   </script>
   <!-- <script src="//unpkg.com/docsify"></script> -->
   <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
@@ -48,6 +70,7 @@
   <script src="path-to-file/docsify-pdf-embed.js"></script>
   <!-- 或者，如果你不自己托管文件，可以使用此链接 -->
   <script src="//unpkg.com/docsify-pdf-embed-plugin/src/docsify-pdf-embed.js"></script>
+  // 代码块高亮
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
@@ -63,5 +86,27 @@
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-docker.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-css.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-nginx.min.js"></script>
+  <!--图片缩放-->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <!--复制到剪贴板-->
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+  <!--字数统计-->
+  <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+  <!--docsify的分页导航插件-->
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <!--基于Preact和Github Issue的评论系统。-->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: 'Github Application Client ID',
+      clientSecret: 'Github Application Client Secret',
+      repo: 'Github repo',
+      owner: 'Github repo owner',
+      admin: ['Github repo collaborators, only these guys can initialize github issues'],
+      // facebook-like distraction free mode
+      distractionFreeMode: false
+    })
+  </script>
 </body>
 </html>
