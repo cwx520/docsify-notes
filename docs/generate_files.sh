@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 设置中文环境以支持拼音排序
+export LC_ALL=zh_CN.UTF-8
+
 # 定义生成的文件名
 NAVBAR_FILE="_navbar.md"
 SIDEBAR_FILE="_sidebar.md"
@@ -33,118 +36,99 @@ should_ignore_file() {
 
 # 生成 _navbar.md 文件
 generate_navbar() {
-  # 清空或创建 _navbar.md 文件
   > "$NAVBAR_FILE"
-
-  # 固定内容
   echo "* [首页](/)" >> "$NAVBAR_FILE"
   echo "* [导读](/README.md)" >> "$NAVBAR_FILE"
 
-  # 遍历当前目录（即 docs 文件夹）的一级子目录
-  find . -maxdepth 1 -type d ! -path . | while read -r dir; do
-    # 获取一级目录名（去掉开头的 ./）
+  find . -maxdepth 1 -type d ! -path . -print0 | sort -z | while IFS= read -r -d '' dir; do
     dir_name=${dir#./}
-    # 排除 assets 文件夹
-    if [ "$dir_name" == "assets" ]; then
+    if should_ignore_dir "$dir_name"; then
       continue
     fi
-    # 输出一级目录
     echo "* $dir_name" >> "$NAVBAR_FILE"
-    # 遍历一级目录下的二级子目录
-    find "$dir" -maxdepth 1 -type d ! -path "$dir" | while read -r subdir; do
-      # 获取二级目录名（去掉一级目录路径）
+    find "$dir" -maxdepth 1 -type d ! -path "$dir" -print0 | sort -z | while IFS= read -r -d '' subdir; do
       subdir_name=${subdir#./$dir_name/}
-      # 输出二级目录
       echo "  * [$subdir_name]($subdir/README.md)" >> "$NAVBAR_FILE"
     done
   done
-
   echo "_navbar.md 文件已生成"
 }
 
-# 生成 _sidebar.md 文件
+# 生成 _sidebar.md 文件（关键修改点）
 generate_sidebar() {
   local dir="$1"
   local base_path="$2"
   local is_root="$3"
 
-  # 进入目录
   cd "$dir" || return
-
-  # 清空或创建 _sidebar.md 文件
   > "$SIDEBAR_FILE"
 
-  # 如果是主目录，生成一级目录的标题和子目录链接
   if [[ "$is_root" == "true" ]]; then
-    for subdir in */; do
+    while IFS= read -r -d '' subdir; do
       subdir_name=$(basename "$subdir")
       if ! should_ignore_dir "$subdir_name"; then
         echo "* $subdir_name" >> "$SIDEBAR_FILE"
-        for subsubdir in "$subdir"*/; do
+        while IFS= read -r -d '' subsubdir; do
           subsubdir_name=$(basename "$subsubdir")
           if ! should_ignore_dir "$subsubdir_name"; then
             echo "  * [**$subsubdir_name**](${base_path#/docs}/$subdir_name/$subsubdir_name/README)" >> "$SIDEBAR_FILE"
           fi
-        done
+        done < <(find "$subdir" -maxdepth 1 -type d ! -path "$subdir" -print0 | sort -z)
       fi
-    done
-    # 添加固定内容
+    done < <(find . -maxdepth 1 -type d ! -path . -print0 | sort -z)
     echo "* 敬请期待..." >> "$SIDEBAR_FILE"
   else
-    # 如果是其他目录，生成当前目录的标题和 .md 文件链接
     echo "* **$(basename "$dir")**" >> "$SIDEBAR_FILE"
-    for file in *; do
-      if [ -f "$file" ] && ! should_ignore_file "$file" && [[ "$file" != "README.md" ]]; then
+    while IFS= read -r -d '' file; do
+      filename=$(basename "$file")  # 提取纯文件名
+      if ! should_ignore_file "$filename" && [[ "$filename" != "README.md" ]]; then
         file_name=$(basename "$file" .md)
         echo "  * [$file_name](${base_path#/docs}/$file_name)" >> "$SIDEBAR_FILE"
       fi
-    done
+    done < <(find . -maxdepth 1 -type f -name "*.md" -print0 | sort -z)
   fi
 
-  # 递归处理子目录
-  for subdir in */; do
+  while IFS= read -r -d '' subdir; do
     subdir_name=$(basename "$subdir")
-    if [ -d "$subdir" ] && ! should_ignore_dir "$subdir_name"; then
+    if ! should_ignore_dir "$subdir_name"; then
       generate_sidebar "$subdir" "${base_path#/docs}/$subdir_name" "false"
     fi
-  done
+  done < <(find . -maxdepth 1 -type d ! -path . -print0 | sort -z)
 
-  # 返回上级目录
   cd ..
 }
 
-# 生成 README.md 文件
+# 生成 README.md 文件（关键修改点）
 generate_readme() {
   local dir="$1"
   local base_path="$2"
 
-  # 进入目录
   cd "$dir" || return
-
-  # 生成 README.md 文件
   echo "# $(basename "$dir")" > "$README_FILE"
-  for file in *; do
-    if [ -f "$file" ] && ! should_ignore_file "$file" && [[ "$file" != "README.md" ]]; then
+
+  while IFS= read -r -d '' file; do
+    filename=$(basename "$file")  # 提取纯文件名
+    if ! should_ignore_file "$filename" && [[ "$filename" != "README.md" ]]; then
       file_name=$(basename "$file" .md)
       echo "* [$file_name](${base_path#/docs}/$file_name)" >> "$README_FILE"
     fi
-  done
+  done < <(find . -maxdepth 1 -type f -name "*.md" -print0 | sort -z)
 
-  # 递归处理子目录
-  for subdir in */; do
+  while IFS= read -r -d '' subdir; do
     subdir_name=$(basename "$subdir")
-    if [ -d "$subdir" ] && ! should_ignore_dir "$subdir_name"; then
+    if ! should_ignore_dir "$subdir_name"; then
       generate_readme "$subdir" "${base_path#/docs}/$subdir_name"
     fi
-  done
+  done < <(find . -maxdepth 1 -type d ! -path . -print0 | sort -z)
 
-  # 返回上级目录
   cd ..
 }
 
 # 生成根目录的 README.md 文件
 generate_root_readme() {
-  cat <<EOF > /Users/cwx/Documents/projects/docsify-notes/docs/README.md
+  local root_dir="/Users/cwx/Documents/projects/docsify-notes/docs"
+  echo "11111111："+ $root_dir
+  cat <<EOF > "$root_dir/README.md"
 # 导读
 
 cmo的个人博客
@@ -157,30 +141,28 @@ cmo的个人博客
 
 # 目录
 
-$(for dir in $(find /Users/cwx/Documents/projects/docsify-notes/docs -type d -mindepth 1 -maxdepth 1 ! -name "assets"); do
-    echo "* **$(basename $dir)**"
-    for subdir in $(find $dir -type d -mindepth 1 -maxdepth 1); do
-        echo "    * [$(basename $subdir)]($(echo $subdir | sed 's|/Users/cwx/Documents/projects/docsify-notes/docs||g')/README)"
-    done
-done)
+$(while IFS= read -r -d '' dir; do
+    dir_name=$(basename "$dir")
+    if ! should_ignore_dir "$dir_name"; then
+      echo "* **$dir_name**"
+      while IFS= read -r -d '' subdir; do
+        subdir_name=$(basename "$subdir")
+        echo "    * [$subdir_name]($(echo "$subdir" | sed "s|$root_dir||g")/README)"
+      done < <(find "$dir" -maxdepth 1 -type d ! -path "$dir" -print0 | sort -z)
+    fi
+  done < <(find "$root_dir" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z))
 EOF
 
-  echo "README.md generated successfully."
-  chmod 644 /Users/cwx/Documents/projects/docsify-notes/docs/README.md
+  echo "README.md 文件已生成"
+  chmod 644 "$root_dir/README.md"
 }
 
 # 主函数
 main() {
-  # 生成 _navbar.md
   generate_navbar
-
-  # 生成 _sidebar.md 和 README.md
   generate_sidebar "." "" "true"
   generate_readme "." ""
-
-  # 生成根目录的 README.md
   generate_root_readme
-
   echo "所有文件生成完成！"
 }
 

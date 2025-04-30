@@ -11,15 +11,15 @@ cmo的个人博客
 # 目录
 
 * **面试题库**
-    * [Redis](/面试题库/Redis/README)
     * [Java](/面试题库/Java/README)
     * [Nginx](/面试题库/Nginx/README)
+    * [Redis](/面试题库/Redis/README)
 * **实战项目**
-    * [商城项目](/实战项目/商城项目/README)
     * [企业项目](/实战项目/企业项目/README)
+    * [商城项目](/实战项目/商城项目/README)
     * [外卖项目](/实战项目/外卖项目/README)
+* **学习笔记**
+    * [三高架构](/学习笔记/三高架构/README)
 * **用法案例**
     * [md文件](/用法案例/md文件/README)
     * [pdf文件](/用法案例/pdf文件/README)
-* **学习笔记**
-    * [三高架构](/学习笔记/三高架构/README)
